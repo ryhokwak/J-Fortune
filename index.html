@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>J-Fortune | 제주항공 AI 여행 운세</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",Arial,sans-serif;background:linear-gradient(135deg,#fff7ed,#eef8ff);color:#18212b}
+.wrap{max-width:520px;margin:auto;padding:24px 18px 40px}.brand{font-size:14px;font-weight:700;letter-spacing:.08em;margin:6px 4px 18px}
+.card{background:#fff;border-radius:26px;padding:26px;box-shadow:0 12px 40px #15223814}
+h1{font-size:30px;margin:0 0 8px}.sub{color:#66727f;line-height:1.55;margin:0 0 24px}
+.progress{font-size:13px;color:#7b8794;margin-bottom:10px}.q{font-size:20px;font-weight:800;line-height:1.4;margin:0 0 14px}
+.option{width:100%;border:1px solid #e7ebef;background:#fff;border-radius:15px;padding:14px 15px;margin:8px 0;text-align:left;font-size:16px;cursor:pointer}
+.option:hover{background:#f7fbff;border-color:#a9cde8}.hide{display:none}
+.result{text-align:center}.emoji{font-size:58px}.tag{display:inline-block;padding:7px 12px;border-radius:99px;background:#fff1d9;font-weight:700;font-size:13px}
+.result h2{font-size:27px;margin:12px 0}.fortune{font-size:18px;font-weight:700;line-height:1.5}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:20px 0}.box{background:#f7f8fa;border-radius:16px;padding:14px;text-align:left}.label{font-size:12px;color:#7a8590}.value{font-weight:700;margin-top:5px;line-height:1.4}
+.mission{background:#eef8ff;border-radius:18px;padding:16px;text-align:left;margin-top:12px}.mission b{display:block;margin-bottom:6px}
+button.primary{width:100%;border:0;border-radius:15px;padding:15px;background:#18212b;color:white;font-size:16px;font-weight:700;cursor:pointer}
+.footer{text-align:center;color:#89939d;font-size:12px;margin-top:18px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="brand">✈️ JEJU AIR × J-FORTUNE</div>
+<div class="card">
+<section id="start">
+<h1>나의 여행 운세는?</h1>
+<p class="sub">간단한 질문에 답하고<br>AI가 분석한 나만의 여행 운세를 확인해보세요.</p>
+<button class="primary" onclick="start()">운세 시작하기 ✨</button>
+</section>
+
+<section id="quiz" class="hide">
+<div class="progress" id="progress"></div>
+<h2 class="q" id="question"></h2>
+<div id="options"></div>
+</section>
+
+<section id="result" class="hide result">
+<div class="emoji">🔮</div>
+<span class="tag">MY TRAVEL FORTUNE</span>
+<h2 id="title"></h2>
+<p class="fortune" id="fortune"></p>
+<div class="grid">
+<div class="box"><div class="label">🍀 여행 키워드</div><div class="value" id="keyword"></div></div>
+<div class="box"><div class="label">📍 행운의 장소</div><div class="value" id="place"></div></div>
+<div class="box"><div class="label">🍜 행운의 메뉴</div><div class="value" id="food"></div></div>
+<div class="box"><div class="label">🧳 여행 캐릭터</div><div class="value" id="character"></div></div>
+</div>
+<div class="mission"><b>🎯 오늘의 여행 미션</b><span id="mission"></span></div>
+<br>
+<button class="primary" onclick="location.reload()">다시 해보기</button>
+</section>
+</div>
+<div class="footer">발표용 J-Fortune 프로토타입 · 제주항공 서비스 제안</div>
+</div>
+
+<script>
+const qs=[
+["이번 여행에서 가장 기대하는 것은?",["🍜 맛집","📸 사진","🛍️ 쇼핑","🌴 휴식","🎉 새로운 경험"]],
+["여행할 때 나는?",["📋 계획형","🗺️ 반계획형","🎲 즉흥형"]],
+["갑자기 2시간의 여유가 생긴다면?",["☕ 카페","📍 관광","🍜 맛집","🛍️ 쇼핑"]],
+["이번 여행에서 가장 얻고 싶은 것은?",["❤️ 추억","👥 새로운 만남","🌱 새로운 경험","😌 휴식"]]
+];
+let i=0, answers=[];
+function start(){document.getElementById("start").classList.add("hide");document.getElementById("quiz").classList.remove("hide");render();}
+function render(){
+ document.getElementById("progress").textContent=`QUESTION ${i+1} / ${qs.length}`;
+ document.getElementById("question").textContent=qs[i][0];
+ const box=document.getElementById("options");box.innerHTML="";
+ qs[i][1].forEach(x=>{let b=document.createElement("button");b.className="option";b.textContent=x;b.onclick=()=>choose(x);box.appendChild(b)});
+}
+function choose(x){answers.push(x);i++;i<qs.length?render():showResult();}
+function showResult(){
+ let spontaneous=answers.includes("🎲 즉흥형")||answers.includes("🎉 새로운 경험")||answers.includes("🌱 새로운 경험");
+ let food=answers.includes("🍜 맛집"), rest=answers.includes("🌴 휴식")||answers.includes("😌 휴식"), photo=answers.includes("📸 사진"), shop=answers.includes("🛍️ 쇼핑");
+ let r;
+ if(spontaneous) r={e:"🧳",t:"즉흥 모험가",f:"오늘은 계획보다 우연한 발견이 당신의 여행을 빛내줄 거예요!",k:"뜻밖의 발견",p:"현지 시장",fd:"현지 로컬 음식",m:"평소 먹어보지 않았던 현지 음식에 도전하기"};
+ else if(food) r={e:"🍜",t:"미식 탐험가",f:"오늘의 행운은 새로운 맛을 만나는 순간 찾아옵니다.",k:"맛있는 발견",p:"로컬 맛집 골목",fd:"현지 대표 음식",m:"현지인에게 추천 메뉴 하나 받아보기"};
+ else if(photo) r={e:"📸",t:"감성 기록가",f:"오늘은 평범한 순간도 인생샷이 될 가능성이 높아요.",k:"인생 장면",p:"전망 좋은 명소",fd:"비주얼 좋은 디저트",m:"여행지에서 가장 마음에 드는 장면 한 컷 남기기"};
+ else if(shop) r={e:"🛍️",t:"스마트 쇼퍼",f:"뜻밖의 득템이 기다리고 있어요. 단, 충동구매는 잠시만 고민하세요!",k:"뜻밖의 득템",p:"현지 마켓",fd:"현지 간식",m:"현지에서만 살 수 있는 아이템 하나 찾아보기"};
+ else r={e:"🌴",t:"힐링 여행자",f:"조금 천천히 걸을수록 여행의 좋은 순간을 더 많이 발견할 거예요.",k:"느림의 행운",p:"로컬 카페",fd:"현지 디저트",m:"30분 동안 휴대폰을 내려놓고 주변 풍경 즐기기"};
+ document.getElementById("quiz").classList.add("hide");document.getElementById("result").classList.remove("hide");
+ document.getElementById("title").textContent=r.t;document.getElementById("fortune").textContent=r.f;
+ document.getElementById("keyword").textContent=r.k;document.getElementById("place").textContent=r.p;document.getElementById("food").textContent=r.fd;document.getElementById("character").textContent=r.t;document.getElementById("mission").textContent=r.m;
+ document.querySelector(".emoji").textContent=r.e;
+}
+</script>
+</body>
+</html>
